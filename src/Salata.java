@@ -10,7 +10,10 @@ public class Salata implements Serializable {
     static File file = new File("myObjectss.txt");
     static File Afisare = new File("Afisare.txt");
     static FileWriter pw;
+    private ArrayList<Leguma> legume;
+    private ArrayList<Leguma> salataPregatire;
 
+    // todo: figure out wtf this does
     static {
         try {
             pw = new FileWriter(Afisare);
@@ -25,7 +28,7 @@ public class Salata implements Serializable {
     public Salata() throws IOException {
     }
 
-    public static void main(String[] args) throws Exception {
+    public void start() throws Exception {
         Scanner cin = new Scanner(System.in);
         String opt;
         System.out.print("-> Tastati 1 pentru a face o salata. ");
@@ -40,15 +43,13 @@ public class Salata implements Serializable {
         }
     }
 
-    public static void Meniu() throws Exception {
-        ArrayList<Leguma> listaG = new ArrayList<Leguma>();
-        ArrayList<Leguma> salataPregatire = new ArrayList<>();
+    // todo: split this into multiple functions
+    public void Meniu() throws Exception {
         if (file.isFile()) {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-            listaG = (ArrayList<Leguma>) ois.readObject();
+            this.legume = (ArrayList<Leguma>) ois.readObject();
             ois.close();
         }
-
 
         Scanner cin = new Scanner(System.in);
         int optiune = 0;
@@ -67,6 +68,7 @@ public class Salata implements Serializable {
             System.out.println("12. Detaliile salatei: ");
             System.out.println("0.  Iesire.");
 
+            // todo: find better way
             do {
                 boolean esteNumar = false;
                 do {
@@ -85,7 +87,7 @@ public class Salata implements Serializable {
 
             switch (optiune) {
                 case 1:
-                    Citire(listaG);
+                    Citire();
                     System.out.println();
                     break;
                 case 2:
@@ -105,13 +107,13 @@ public class Salata implements Serializable {
                         System.out.println();
                         if (af >= 0 && af <= 8) {
                             switch (af) {
-                                case 1 -> AfisareLegume(listaG);
-                                case 2 -> Cartof.AfisareCartofi(listaG);
-                                case 3 -> Morcov.AfisareMorcovi(listaG);
-                                case 4 -> Varza.AfisareVerze(listaG);
-                                case 5 -> Castravete.AfisareCastraveti(listaG);
-                                case 6 -> Porumb.AfisareArdei(listaG);
-                                case 7 -> Ceapa.AfisareCepi(listaG);
+                                case 1 -> legume.forEach(Leguma::Afisare);
+                                case 2 -> AfisareLegume(new Cartof());
+                                case 3 -> AfisareLegume(new Morcov());
+                                case 4 -> AfisareLegume(new Varza());
+                                case 5 -> AfisareLegume(new Castravete());
+                                case 6 -> AfisareLegume(new Porumb());
+                                case 7 -> AfisareLegume(new Ceapa());
                             }
                         }
                     } while (af != 0);
@@ -130,63 +132,18 @@ public class Salata implements Serializable {
                         System.out.print("-> Introdu optiunea: ");
                         af = cin.nextByte();
                         System.out.println();
+                        Leguma leguma = null;
                         if (af >= 1 && af <= 6) {
-                            switch (af) {
-                                case 1 -> {
-                                    Cartof leguma;
-                                    leguma
-                                            = (Cartof) (CitireLeguma(1, listaG));
-                                    listaG.add(leguma);
-                                    oos = new ObjectOutputStream(new FileOutputStream(file));
-                                    oos.writeObject(listaG);
-                                    oos.close();
-                                }
-                                case 2 -> {
-                                    Morcov leguma;
-                                    leguma = (Morcov) (CitireLeguma(2, listaG));
-                                    listaG.add(leguma);
-                                    oos = new ObjectOutputStream(new FileOutputStream(file));
-                                    oos.writeObject(listaG);
-                                    oos.close();
-                                }
-                                case 3 -> {
-                                    Varza leguma;
-                                    leguma = (Varza) (CitireLeguma(3, listaG));
-                                    listaG.add(leguma);
-                                    oos = new ObjectOutputStream(new FileOutputStream(file));
-                                    oos.writeObject(listaG);
-                                    oos.close();
-                                }
-                                case 4 -> {
-                                    Castravete leguma;
-                                    leguma = (Castravete) (CitireLeguma(4, listaG));
-                                    listaG.add(leguma);
-                                    oos = new ObjectOutputStream(new FileOutputStream(file));
-                                    oos.writeObject(listaG);
-                                    oos.close();
-                                }
-                                case 5 -> {
-                                    Porumb leguma;
-                                    leguma = (Porumb) (CitireLeguma(5, listaG));
-                                    listaG.add(leguma);
-                                    oos = new ObjectOutputStream(new FileOutputStream(file));
-                                    oos.writeObject(listaG);
-                                    oos.close();
-                                }
-                                case 6 -> {
-                                    Ceapa leguma;
-                                    leguma = (Ceapa) (CitireLeguma(6, listaG));
-                                    listaG.add(leguma);
-                                    oos = new ObjectOutputStream(new FileOutputStream(file));
-                                    oos.writeObject(listaG);
-                                    oos.close();
-                                }
-                            }
+                            leguma = CitireLeguma(af);
+                            legume.add(leguma);
+                            oos = new ObjectOutputStream(new FileOutputStream(file));
+                            oos.writeObject(legume);
+                            oos.close();
                         }
                     } while (af != 0);
                     break;
                 case 4:
-                    AfisareLegume(listaG);
+                    legume.forEach(this::AfisareLegume);
                     do {
                         System.out.println("       | 1. Adauga cartof.");
                         System.out.println("       | 2. Adauga castravete.");
@@ -200,35 +157,16 @@ public class Salata implements Serializable {
                         af = cin.nextByte();
                         System.out.println();
                         if (af >= 1 && af <= 6) {
-                            switch (af) {
-                                case 1 -> {
-                                    salataPregatire = AdaugareInSalata(1, listaG, salataPregatire);
-                                }
-                                case 2 -> {
-                                    salataPregatire = AdaugareInSalata(2, listaG, salataPregatire);
-                                }
-                                case 3 -> {
-                                   salataPregatire =  AdaugareInSalata(3, listaG, salataPregatire);
-                                }
-                                case 4 -> {
-                                   salataPregatire =  AdaugareInSalata(4, listaG, salataPregatire);
-                                }
-                                case 5 -> {
-                                   salataPregatire =  AdaugareInSalata(5, listaG, salataPregatire);
-                                }
-                                case 6 -> {
-                                    salataPregatire = AdaugareInSalata(6, listaG, salataPregatire);
-                                }
-                            }
+                            AdaugareInSalata(af);
                         }
                     } while (af != 0);
                     break;
 
                 case 5:
                     Predicate<Leguma> pr = leguma -> (leguma instanceof Cartof || leguma instanceof Ceapa);
-                    listaG.removeIf(pr);
+                    legume.removeIf(pr);
                     oos = new ObjectOutputStream(new FileOutputStream(file));
-                    oos.writeObject(listaG);
+                    oos.writeObject(legume);
                     oos.close();
                     System.out.println();
                     break;
@@ -237,7 +175,7 @@ public class Salata implements Serializable {
                     System.out.println();
                     break;
                 case 7:
-                    Diapazon(listaG);
+                    Diapazon(legume);
                     break;
                 case 8:
                     CaloriiMax(salataPregatire);
@@ -249,25 +187,25 @@ public class Salata implements Serializable {
                     String idd;
                     int id;
                     do {
-                        System.out.print("-> ID" + " (introdu doar numere, care sa fie incluse intre " + "0 " + "si " + listaG.size() + "): ");
+                        System.out.print("-> ID" + " (introdu doar numere, care sa fie incluse intre " + "0 " + "si " + legume.size() + "): ");
                         idd = cin.next();
                         while (!idd.matches("[0-9]+")) {
-                            System.out.print("-> ID" + " (introdu doar numere, care sa fie incluse intre " + "0 " + "si " + listaG.size() + "): ");
+                            System.out.print("-> ID" + " (introdu doar numere, care sa fie incluse intre " + "0 " + "si " + legume.size() + "): ");
                             idd = cin.next();
                         }
                         id = Integer.parseInt(idd);
-                    } while (id > listaG.size());
+                    } while (id > legume.size());
                     System.out.println("---------------------------------------------------------------------------------------------------------");
                     TabelAtr();
                     int finalId = id;
-                    listaG.stream().filter(leguma -> leguma.getId() == finalId).forEach(System.out::println);
+                    legume.stream().filter(leguma -> leguma.getId() == finalId).forEach(System.out::println);
                     System.out.println("---------------------------------------------------------------------------------------------------------");
                     break;
                 case 11:
                     salataPregatire.clear();
-                    listaG.clear();
+                    legume.clear();
                     oos = new ObjectOutputStream(new FileOutputStream(file));
-                    oos.writeObject(listaG);
+                    oos.writeObject(legume);
                     System.out.println("------------------------------------------------------------------------------------");
                     System.out.println("LEGUMELE AU FOST STERSE.");
                     System.out.println("------------------------------------------------------------------------------------");
@@ -278,7 +216,7 @@ public class Salata implements Serializable {
                     pw.write("Informatii despre salata" + "\n");
                     pw.write("Caloriile salatei: " + CaloriiTotal(salataPregatire) + "\n" +
                             "Pretul salatei: " + SumaPret(salataPregatire) + "\n" + "Pretul salatei: " + SumaPret(salataPregatire)
-                       + "\n");
+                            + "\n");
                     System.out.println("Caloriile salatei: " + CaloriiTotal(salataPregatire));
                     System.out.println("Pretul salatei: " + SumaPret(salataPregatire));
                     System.out.println("----------------------");
@@ -312,7 +250,8 @@ public class Salata implements Serializable {
         } while (optiune != 0);
     }
 
-    static ArrayList<Leguma> Citire(ArrayList<Leguma> listaG) throws IOException {
+    // todo: rename to something better
+    private void Citire() throws IOException {
         Porumb porumb = new Porumb(0, "src.Porumb", "rosu", "Ceros", 100, 5);
         Cartof cartof = new Cartof(1, "src.Cartof", "rosu", "Bundrea", 150, 3);
         Castravete castravete = new Castravete(2, "src.Castravete", "verde", "Kavi", 200, 2);
@@ -324,63 +263,47 @@ public class Salata implements Serializable {
         Castravete castravete2 = new Castravete(8, "src.Castravete", "verde", "Gerda", 50, 3);
         Ceapa ceapa2 = new Ceapa(9, "src.Ceapa", "alb", "Vidalia", 100, 2);
         Ceapa ceapa3 = new Ceapa(10, "src.Ceapa", "alb", "Polska", 100, 3.5);
-        for (int i = 0; i < listaG.size(); i++) {
-            for (int j = i; j < listaG.size(); j++) {
-                if (listaG.get(i).getId() == listaG.get(j).getId()) {
-                    listaG.remove(i);
+        for (int i = 0; i < legume.size(); i++) {
+            for (int j = i; j < legume.size(); j++) {
+                if (legume.get(i).getId() == legume.get(j).getId()) {
+                    legume.remove(i);
                     oos = new ObjectOutputStream(new FileOutputStream(file));
-                    oos.writeObject(listaG);
+                    oos.writeObject(legume);
                     oos.close();
                     throw new IllegalArgumentException();
                 }
             }
         }
-        listaG.addAll(List.of(porumb, cartof, castravete, morcov, varza, ceapa, cartof2, morcov2, castravete2, ceapa2, ceapa3));
+        legume.addAll(List.of(porumb, cartof, castravete, morcov, varza, ceapa, cartof2, morcov2, castravete2, ceapa2, ceapa3));
         oos = new ObjectOutputStream(new FileOutputStream(file));
-        oos.writeObject(listaG);
+        oos.writeObject(legume);
         oos.close();
         System.out.println("------------------------------------------------------------------------------------");
         System.out.println("LEGUMELE AU FOST CITITE.");
         System.out.println("------------------------------------------------------------------------------------");
-        return listaG;
     }
 
-    static ArrayList<Leguma> AdaugareInSalata(int optiune, ArrayList<Leguma> x, ArrayList<Leguma> salataPregatire) {
+    void AdaugareInSalata(int optiune) {
         Scanner cin = new Scanner(System.in);
-        Leguma object = null;
         System.out.println("---------------------------------------------------------------------------------------------------------");
         TabelAtr();
-        ArrayList <Leguma> v = new ArrayList<>();
-        if (optiune == 1) {
-            object = (Cartof) object;
-            v = (ArrayList<Leguma>) x.stream().filter(leguma -> leguma instanceof Cartof).collect(Collectors.toList());
-            v.forEach(leguma -> System.out.println(leguma.toString()));
+        ArrayList <Leguma> v;
+        Leguma tip = null;
+        switch (optiune) {
+            case 1 -> tip = new Cartof();
+            case 2 -> tip = new Castravete();
+            case 3 -> tip = new Ceapa();
+            case 4 -> tip = new Morcov();
+            case 5 -> tip = new Porumb();
+            case 6 -> tip = new Varza();
         }
-        if (optiune == 2) {
-            object = (Castravete) object;
-           v = (ArrayList<Leguma>) x.stream().filter(leguma -> leguma instanceof Castravete).collect(Collectors.toList());
-            v.forEach(leguma -> System.out.println(leguma.toString()));
-        }
-        if (optiune == 3) {
-            object = (Ceapa) object;
-            v = (ArrayList<Leguma>) x.stream().filter(leguma -> leguma instanceof Ceapa).collect(Collectors.toList());
-            v.forEach(leguma -> System.out.println(leguma.toString()));
-        }
-        if (optiune == 4) {
-            object = (Morcov) object;
-            v = (ArrayList<Leguma>) x.stream().filter(leguma -> leguma instanceof Morcov).collect(Collectors.toList());
-            v.forEach(leguma -> System.out.println(leguma.toString()));
-        }
-        if (optiune == 5) {
-            object = (Porumb) object;
-            v = (ArrayList<Leguma>) x.stream().filter(leguma -> leguma instanceof Porumb).collect(Collectors.toList());
-            v.forEach(leguma -> System.out.println(leguma.toString()));
-        }
-        if (optiune == 6) {
-            object = (Varza) object;
-            v = (ArrayList<Leguma>) x.stream().filter(leguma -> leguma instanceof Varza).collect(Collectors.toList());
-            v.forEach(leguma -> System.out.println(leguma.toString()));
-        }
+
+        // todo: check if this works and how to improve it
+        Leguma finalTip = tip;
+        v = (ArrayList<Leguma>) legume.stream()
+                .filter(leguma -> leguma.getClass() == finalTip.getClass())
+                .collect(Collectors.toList());
+
         System.out.println("---------------------------------------------------------------------------------------------------------");
         String idd;
         System.out.print("-> Introdu ID-ul legumei: "); idd = cin.next();
@@ -393,7 +316,7 @@ public class Salata implements Serializable {
         for (Leguma i : v) {
             if (id == i.getId()) {
                 salataPregatire.add(i);
-                x.remove(i);
+                legume.remove(i);
                 Gasit = true;
             }
         }
@@ -405,7 +328,6 @@ public class Salata implements Serializable {
             System.out.println("------ src.Leguma cu ID-ul " + idd + " a fost adaugata.");
             System.out.println();
         }
-        return salataPregatire;
     }
 
     static String TabelAtr() {
@@ -415,34 +337,21 @@ public class Salata implements Serializable {
         return String.valueOf(fmt);
     }
 
-    static void AfisareLegume(ArrayList<? extends Leguma> v) throws IOException, FileNotFoundException, ClassNotFoundException {
-
-        try {
-            if (v.isEmpty()) {
-                throw new IllegalArgumentException();
-            } else {
-                System.out.println("----------------------------------------------------------------------------------------------------------------");
-                TabelAtr();
-                v.forEach(af -> System.out.println(af.toString()));
-            }
-            System.out.println("----------------------------------------------------------------------------------------------------------------");
-        } catch (IllegalArgumentException e) {
-            System.out.println("----------------------------------------------------------------------------------------------------------------");
-            System.out.println("Lista nu are elemente!!!");
-            System.out.println("----------------------------------------------------------------------------------------------------------------");
-        }
+    void AfisareLegume(Leguma tip) {
+        legume.stream().filter(leguma -> leguma.getClass() == tip.getClass())
+                .forEach(Leguma::Afisare);
     }
 
-    static double SumaPret(ArrayList<Leguma> v) {
+    double SumaPret(ArrayList<Leguma> v) {
         double sum = v.stream().filter(leguma -> leguma.getPretKg() > 0).mapToDouble(Leguma::getPretKg).sum();
         return sum;
     }
 
-    static Object CitireLeguma (int optiune, ArrayList<Leguma> listaG) throws IOException {
+    Leguma CitireLeguma (int optiune) throws IOException {
         Scanner cin = new Scanner(System.in);
-        Object leguma = null;
+        Leguma leguma = null;
         int id;
-        Leguma object = listaG.stream().reduce((first, second) -> second)
+        Leguma object = legume.stream().reduce((first, second) -> second)
                 .orElse(null);
         if (object == null) {
             id = 0;
@@ -484,24 +393,15 @@ public class Salata implements Serializable {
         }
         int pret = Integer.parseInt(pr);
 
-        if (optiune == 1) {
-            leguma = new Cartof(id, "src.Cartof", culoare, sort, grame, pret);
+        switch (optiune) {
+            case 1 -> leguma = new Cartof(id, "src.Cartof", culoare, sort, grame, pret);
+            case 2 -> leguma = new Morcov(id, "src.Morcov", culoare, sort, grame, pret);
+            case 3 -> leguma = new Varza(id, "src.Varza", culoare, sort, grame, pret);
+            case 4 -> leguma = new Castravete(id, "src.Castravete", culoare, sort, grame, pret);
+            case 5 -> leguma = new Porumb(id, "src.Porumb", culoare, sort, grame, pret);
+            case 6 -> leguma = new Ceapa(id, "src.Ceapa", culoare, sort, grame, pret);
         }
-        if (optiune == 2) {
-            leguma = new Morcov(id, "src.Morcov", culoare, sort, grame, pret);
-        }
-        if (optiune == 3) {
-            leguma = new Varza(id, "src.Varza", culoare, sort, grame, pret);
-        }
-        if (optiune == 4) {
-            leguma = new Castravete(id, "src.Castravete", culoare, sort, grame, pret);
-        }
-        if (optiune == 5) {
-            leguma = new Porumb(id, "src.Porumb", culoare, sort, grame, pret);
-        }
-        if (optiune == 6) {
-            leguma = new Ceapa(id, "src.Ceapa", culoare, sort, grame, pret);
-        }
+
         System.out.println("------------------------------------------------------------------------------------");
         System.out.println("LEGUMA A FOST ADAUGATA!!!");
         System.out.println("------------------------------------------------------------------------------------");

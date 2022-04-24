@@ -11,17 +11,14 @@ import java.util.Formatter;
 
 
 
-abstract class Leguma extends Salata implements Serializable, CalculareCalorii {
+abstract class Leguma  implements Serializable, CalculareCalorii {
 
     String nume, culoare, sort;
     int grameFolosite, id;
     double pret;
     double calorii;
     final int caloriiPer100 = 0;
-
-    //src.Leguma() {
-///
-   // }
+    public Leguma() {}
 
     public Leguma(int id, String nume, String culoare, String sort, int grameFolosite, double pret) throws IOException {
         this.id = id;

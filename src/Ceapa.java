@@ -10,11 +10,8 @@ public class Ceapa extends Leguma{
         super(id, nume, culoare, sort, grameFolosite, pret);
     }
 
-    static void AfisareCepi (ArrayList<Leguma> v) {
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
-        Leguma.Tabel();
-        v.stream().filter(leguma -> leguma instanceof Ceapa).forEach(leguma -> System.out.println(leguma));
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
+    public Ceapa() {
+
     }
 
     @Override

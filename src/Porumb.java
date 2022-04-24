@@ -11,11 +11,8 @@ public class Porumb extends Leguma implements Serializable{
         super(id, nume, culoare, sort, grameFolosite, pret);
     }
 
-    static void AfisareArdei(ArrayList<? extends Leguma> v) {
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
-        Leguma.Tabel();
-        v.stream().filter(leguma -> leguma instanceof Porumb).forEach(leguma -> System.out.println(leguma));
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
+    public Porumb() {
+
     }
 
     @Override

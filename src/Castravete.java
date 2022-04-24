@@ -11,11 +11,8 @@ public class Castravete extends Leguma{
         super(id, nume, culoare, sort, grameFolosite, pret);
     }
 
-    static void AfisareCastraveti (ArrayList<? extends Leguma> v) {
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
-        Leguma.Tabel();
-        v.stream().filter(leguma -> leguma instanceof Castravete).forEach(leguma -> System.out.println(leguma));
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
+    public Castravete() {
+
     }
 
     public void setCalorii(int calorii) {
