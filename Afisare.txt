@@ -1,0 +1,22 @@
+----------------------------------------------------------------------------------------------------------
+Sortarea descrescatoare dupa calorii a legumelor salatei: 
+----------------------------------------------------------------------------------------------------------        ID           Nume        Culoare             Sort          Grame           Pret        Calorii
+         1         Cartof           rosu          Bundrea            150            3.0          130.5
+         0         Porumb           rosu            Ceros            100            5.0           96.0
+         4          Varza          verde         Broccoli            200           15.0           62.0
+         3         Morcov     portocaliu           Bacani            120            2.5           49.2
+         6         Cartof           rosu         Cumidava             50            4.5           43.5
+         2     Castravete          verde             Kavi            200            2.0           24.0
+         7         Morcov          negru           Nantes             50            2.0           20.5
+         8     Castravete          verde            Gerda             50            3.0            6.0
+
+------------------------------------------------------------------------------------Informatii despre salata
+Caloriile salatei: 431.7
+Pretul salatei: 37.0
+Pretul salatei: 37.0
+Cartof: 2
+Castravete: 2
+Ceapa: 0
+Morcov: 2
+Porumb: 1
+Varza: 1
