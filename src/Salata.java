@@ -5,7 +5,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-
 public class Salata implements Serializable {
     static File file = new File("myObjectss.txt");
     static File Afisare = new File("Afisare.txt");

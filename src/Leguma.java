@@ -1,26 +1,18 @@
 package src;
 
-import org.w3c.dom.ls.LSOutput;
-
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Formatter;
 
-
-
-abstract class Leguma  implements Serializable, CalculareCalorii {
-
+abstract class Leguma  implements Serializable {
     String nume, culoare, sort;
     int grameFolosite, id;
     double pret;
-    double calorii;
     final int caloriiPer100 = 0;
     public Leguma() {}
 
-    public Leguma(int id, String nume, String culoare, String sort, int grameFolosite, double pret) throws IOException {
+    protected Leguma(int id, String nume, String culoare, String sort, int grameFolosite, double pret) {
         this.id = id;
         this.nume = nume;
         this.culoare = culoare;
@@ -31,18 +23,6 @@ abstract class Leguma  implements Serializable, CalculareCalorii {
 
     public int getId() {
         return id;
-    }
-
-    public Leguma (String nume, String culoare, String sort) throws IOException {
-        this.nume = nume;
-        this.culoare = culoare;
-        this.culoare = sort;
-    }
-
-   public Leguma (String nume, String culoare, int grameFolosite) throws IOException {
-       this.nume = nume;
-        this.culoare = culoare;
-      this.grameFolosite = grameFolosite;
     }
 
     public String getNume() {
@@ -65,8 +45,6 @@ abstract class Leguma  implements Serializable, CalculareCalorii {
         return pret;
     }
 
-
-    @Override
     public double CaloriiCant() {
         double per100 = (double)grameFolosite / 100;
         return (caloriiPer100*per100);
